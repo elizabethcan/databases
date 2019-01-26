@@ -1,14 +1,7 @@
 var models = require('../models');
 
 var mysql = require('mysql');
-var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'student',
-  password: 'student',
-  database: 'chat'
-});
- 
-connection.connect();
+
 
 module.exports = {
   messages: {
@@ -19,23 +12,22 @@ module.exports = {
         ON rooms.id = messages.room_id
       `, function (error, results, fields) {
           if (error) { throw error; }
-          console.log(results);
+          console.log('Get request messages', results);
           res.status(200).json(results);
         });
     }, // a function which handles a get request for all messages
     post: function (req, res) {
       var text = req.body.message;
-      console.log(text);
-      // Query to check user and if that user didn't exist create on
-      // get user id
-      // '' rooms
-      // Check if roomname exists
+      console.log('req.text', text);
+      debugger;
+      // If roomname was specified on object then proceed else set to lobby
       if (req.body.roomname) {
         // Find room by roomname
         connection.query(`
           SELECT * FROM rooms 
           WHERE name="${req.body.roomname}"
         `, function(error, results, fields) {
+          debugger;
           if (error) {
             throw error;
           }
@@ -106,24 +98,17 @@ module.exports = {
   rooms: {
     // Ditto as above
     get: function (req, res) {
-      connection.query('SELECT * FROM rooms', function (error, results, fields) {
-        if (error) { throw error; }
-        console.log(results[0]);
-        res.status(200).json(results);
+      models.rooms.get({} ,(err, data) => {
+        if (err) throw err;
+        res.status(200);
+        res.json(data);
       });
     },
     post: function (req, res) {
-      var roomname = req.body.roomname;
-      var query = `
-        INSERT INTO rooms(name)
-        VALUES (${roomname});
-      `;
-      connection.query(query, function (error, results, fields) {
-        if (error) { throw error; }
-        connection.query(`SELECT * FROM roomname WHERE id=${results.insertId}`, function (error, results, fields) {
-          if (error) { throw error; }
-          res.status(201).json(results);
-        });
+      models.rooms.post(req.body, (err, data) => {
+        if (err) throw err;
+        res.status(200);
+        res.json(data);
       });
     }
   }
