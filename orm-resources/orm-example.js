@@ -4,7 +4,7 @@
  */
 
 var Sequelize = require('sequelize');
-var db = new Sequelize('chatter', 'root', '');
+var db = new Sequelize('chat', 'student', 'student');
 /* TODO this constructor takes the database name, username, then password.
  * Modify the arguments if you need to */
 
@@ -19,6 +19,7 @@ var Message = db.define('Message', {
   text: Sequelize.STRING,
   roomname: Sequelize.STRING
 });
+
 
 /* Sequelize comes with built in support for promises
  * making it easy to chain asynchronous operations together */

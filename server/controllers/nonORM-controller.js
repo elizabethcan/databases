@@ -25,26 +25,18 @@ module.exports = {
   users: {
     // Ditto as above
     get: function (req, res) {
-      models.users.get()
-      .then((data) => {
+      models.users.get({} ,(err, data) => {
+        if (err) throw err;
         res.status(200);
         res.json(data);
-      })
-      .catch((err) => {
-        res.status(400)
-        res.send(err);
-      })
+      });
     },
     post: function (req, res) {
-      models.users.post(req.body)
-      .then((data) => {
-        res.status(200);
+      models.users.post(req.body, (err, data) => {
+        if (err) throw err;
+        res.status(201);
         res.json(data);
-      })
-      .catch((err) => {
-        res.status(400)
-        res.send(err);
-      })
+      });
     }
   },
 
